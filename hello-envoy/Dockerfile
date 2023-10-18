@@ -1,4 +1,5 @@
-FROM cgr.dev/chainguard/go:latest as builder
+#FROM cgr.dev/chainguard/go:latest as builder
+FROM golang:1.21 as builder
 
 # Create and change to the app directory.
 WORKDIR /app
