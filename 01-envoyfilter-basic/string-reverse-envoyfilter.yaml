@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: string-reverse
+  namespace: hello-envoy
+spec:
+  workloadSelector:
+    labels:
+      app: hello-envoy
+  configPatches:
+    # The first patch adds the lua filter to the listener/http connection manager
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        portNumber: 8080
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+            subFilter:
+              name: "envoy.filters.http.router"
+    patch:
+      operation: INSERT_BEFORE
+      value: # lua filter specification
+       name: envoy.filters.http.lua
+       typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+          defaultSourceCode:
+            inlineString: |
+              -- Called on the response path.
+              function envoy_on_response(response_handle)
+                local body = response_handle:getResponseBody()
+                local_json = json.decode(body)
+                local_json.message = string.reverse(local_json.message)
+                body = json.encode(local_json)
+                response_handle:setResponseBody(body)
+                response_handle:addHeader("content-type", "application/json")
+              end
