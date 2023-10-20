@@ -31,7 +31,7 @@ spec:
               - all
           privileged: false
           readOnlyRootFilesystem: true
-        image: us-central1-docker.pkg.dev/cicd-system-demo-01/hello-envoy/hello-envoy@sha256:3cbf8190807402d88e10341b250126b62c37d14f5ce929ef4196103eae33a355
+        image: us-central1-docker.pkg.dev/cicd-system-demo-01/hello-envoy/hello-envoy@sha256:771254f845c7b13ae85ceb0f9f9002d5d0ec612ec1a157fe9aac19c1109cf99b
         resources:
           requests:
             memory: "0.5Gi"
@@ -47,13 +47,13 @@ spec:
               path: /
               port: 8080
               scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
+          initialDelaySeconds: 5
+          periodSeconds: 5
           timeoutSeconds: 2
         readinessProbe:
           httpGet:
             path: /
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 10
-          timeoutSeconds: 1
+          initialDelaySeconds: 5
+          timeoutSeconds: 2

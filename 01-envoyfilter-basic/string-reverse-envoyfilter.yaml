@@ -29,10 +29,16 @@ spec:
             inlineString: |
               -- Called on the response path.
               function envoy_on_response(response_handle)
-                local body = response_handle:getResponseBody()
-                local_json = json.decode(body)
-                local_json.message = string.reverse(local_json.message)
-                body = json.encode(local_json)
-                response_handle:setResponseBody(body)
-                response_handle:addHeader("content-type", "application/json")
+                --local body = response_handle:getResponseBody()
+                --local json = require("json")
+                --local body = response_handle:body()
+                --local_json = json.decode(body)
+                --local_json.message = string.reverse(local_json.message)
+                --body = json.encode(local_json)
+                --response_handle:setResponseBody(body)
+                --response_handle:addHeader("content-type", "application/json")
+                local body = response_handle:body()
+                local bodyString = tostring(body:getBytes(0, body:length()))
+                local bodyStringReversed = string.reverse(bodyString)
+                response_handle:body():setBytes(bodyStringReversed)
               end
