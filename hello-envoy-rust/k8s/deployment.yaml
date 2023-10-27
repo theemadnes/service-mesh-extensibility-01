@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-envoy
+  name: hello-envoy
+  namespace: hello-envoy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-envoy
+  template:
+    metadata:
+      labels:
+        app: hello-envoy
+        version: v1
+    spec:
+      serviceAccountName: hello-envoy
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: hello-envoy
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - all
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/cicd-system-demo-01/hello-envoy-rust/hello-envoy-rust@sha256:a0b2d892bcb954b79156c32c27b53250b681dc344f588030a099253b81699883
+        resources:
+          requests:
+            memory: "0.5Gi"
+            cpu: "250m"
+          limits:
+            memory: "0.5Gi"
+            cpu: "250m"
+        ports:
+          - name: http
+            containerPort: 8080
+        livenessProbe:
+          httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 2

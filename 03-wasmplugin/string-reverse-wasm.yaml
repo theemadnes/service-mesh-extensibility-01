@@ -39,6 +39,6 @@ spec:
                 --response_handle:addHeader("content-type", "application/json")
                 local body = response_handle:body()
                 local bodyString = tostring(body:getBytes(0, body:length()))
-                local bodyStringReversed = string.reverse(bodyString) .. " (reversed via Lua filter)"
+                local bodyStringReversed = string.reverse(bodyString)
                 response_handle:body():setBytes(bodyStringReversed)
               end
